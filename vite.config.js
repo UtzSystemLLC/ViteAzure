@@ -12,8 +12,8 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [react()],
     define: {
-      "import.meta.env.VITE_INSTANCE": JSON.stringify(process.env.VITE_INSTANCE || "default-instance"),
-      "import.meta.env.VITE_API_URL": JSON.stringify(process.env.VITE_API_URL || "https://api.default.com"),
+      "import.meta.env.VITE_INSTANCE": JSON.stringify(import.meta.env.VITE_INSTANCE || "default-instance"),
+      "import.meta.env.VITE_API_URL": JSON.stringify(import.meta.env.VITE_API_URL || "https://api.default.com"),
     },
   };
 });
