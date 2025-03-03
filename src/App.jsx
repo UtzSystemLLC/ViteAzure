@@ -6,7 +6,7 @@ function App() {
 
   return (
     <div>
-      <h1>🚀 ¡Hola Mundo desde Vite + React! 🌍</h1>
+      <h1>🚀¡Hola Mundo desde Vite + React! 🌍</h1>
       <p><strong>Instancia:</strong> {instance}</p>
       <p><strong>API URL:</strong> {apiUrl}</p>
     </div>
