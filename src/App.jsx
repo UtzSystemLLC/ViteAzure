@@ -1,60 +1,56 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 function App() {
-  const instance = import.meta.env.VITE_INSTANCE || "No definida";
-  const apiUrl = import.meta.env.VITE_API_URL || "No definida";
-
   const [name, setName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState(null);
+  const [isFromWhatsApp, setIsFromWhatsApp] = useState(false);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("from") === "whatsapp") {
+      setIsFromWhatsApp(true);
+    }
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setError(null);
 
-    // Simular tiempo de respuesta del backend (2 segundos)
     setTimeout(() => {
-      const simulatedResponse = { status: "OK" }; // Simulando que el backend responde bien
+      console.log("✅ Formulario enviado correctamente");
 
-      if (simulatedResponse.status === "OK") {
-        console.log("✅ Formulario enviado correctamente");
+      // Regresar automáticamente a WhatsApp
+      setTimeout(() => {
+        goBackToWhatsApp();
+      }, 1000);
+    }, 2000);
+  };
 
-        // Regresar a WhatsApp después de 1 segundo
-        setTimeout(() => {
-          window.location.href = "whatsapp://";
-        }, 1000);
-      } else {
-        setError("Hubo un problema al enviar el formulario.");
-      }
+  const goBackToWhatsApp = () => {
+    const userAgent = navigator.userAgent || navigator.vendor;
 
-      setIsSubmitting(false);
-    }, 2000); // Simula un retraso de 2 segundos
+    if (/android/i.test(userAgent)) {
+      window.location.href = "intent://send?phone=#PHONE#&text=Gracias!#Intent;scheme=whatsapp;package=com.whatsapp;end;";
+    } else if (/iPad|iPhone|iPod/.test(userAgent) || /Macintosh/.test(userAgent)) {
+      window.location.href = "whatsapp://";
+    } else {
+      window.location.href = "https://web.whatsapp.com/";
+    }
   };
 
   return (
     <div>
-      <h1>🚀 ¡Hola Mundo desde Vite + React! 🌍</h1>
-      <p><strong>Instancia:</strong> {instance}</p>
-      <p><strong>API URL:</strong> {apiUrl}</p>
+      <h1>🚀 ¡Hola desde la App! 🌍</h1>
+      {isFromWhatsApp && <p>📲 Abriste la app desde WhatsApp</p>}
 
       <h2>Formulario</h2>
       <form onSubmit={handleSubmit}>
         <label>
           Escribir Nombre:
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
+          <input type="text" required />
         </label>
-        <button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Enviando..." : "Enviar"}
-        </button>
+        <button type="submit">Enviar</button>
       </form>
-
-      {error && <p style={{ color: "red" }}>{error}</p>}
     </div>
   );
 }
